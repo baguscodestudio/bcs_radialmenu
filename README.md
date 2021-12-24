@@ -27,7 +27,9 @@ A Menu option will have the properties of
 |shouldClose|Whether or not if the menu should close after clicking the option|
 |args |Arguments when triggering the event (Optional)|
 
-To add an option in the home menu you can use
+Configuring the menu and submenus can be done inside Config.RadialMenu in the config.lua.
+
+Additionally to add an option in the home menu in a specific event (such as store car option in a parking lot), you can use
 
 ```lua
 exports['hud']:addMenu({
