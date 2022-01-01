@@ -32,7 +32,7 @@ Configuring the menu and submenus can be done inside Config.RadialMenu in the co
 Additionally to add an option in the home menu in a specific event (such as store car option in a parking lot), you can use
 
 ```lua
-exports['hud']:addMenu({
+exports['bcs_radialmenu']:addMenu({
     label = 'the label you want',
     icon = 'MdPhone', -- For example
     event = 'open:phone',
@@ -45,7 +45,7 @@ exports['hud']:addMenu({
 Don't forget to remove the menu after you are done with it. It takes the label property as its argument.
 
 ```lua
-exports['hud']:removeMenu('the label you want')
+exports['bcs_radialmenu']:removeMenu('the label you want')
 ```
 
 To Create a menu option with a submenu, label, icon, and submenu properties are needed. In theory it should be possible to create as many submenu you want.
