@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useLayer } from 'react-laag';
 import './App.css';
@@ -9,6 +9,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useNuiEvent } from './hooks/useNuiEvent';
 import { fetchNui } from './utils/fetchNui';
 import { useExitListener } from './hooks/useExitListener';
+import { Colors, Size, ColorsProp, SizeProp } from './store/config';
 
 export interface MenuData {
   label: string;
@@ -25,6 +26,16 @@ const App = () => {
   const [radialOpen, setRadialOpen] = useState(false);
   const [items, setItems] = useState<MenuData[]>([]);
   const [home, setHome] = useState<MenuData[]>([]);
+
+  useEffect(() => {
+    fetchNui<{ size: SizeProp; colors: ColorsProp }>('initialize').then(
+      (data) => {
+        for (const [name, val] of Object.entries(data.size)) Size[name] = val;
+        for (const [name, val] of Object.entries(data.colors))
+          Colors[name] = val;
+      }
+    );
+  }, []);
 
   useNuiEvent<MenuData[]>('openMenu', (data) => {
     setRadialOpen(true);

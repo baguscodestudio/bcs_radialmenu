@@ -8,6 +8,25 @@ Config.Framework = 'ESX' -- ESX/QB/Standalone
     Event, shouldclose, and client must exist if there is not submenu property
     args is optional
 ]]
+local container = 120
+
+Config.UI = {
+    -- Everything is in px
+    Size = {
+        BUTTON_SIZE = 56,
+        ITEM_SIZE = 48,
+        CONTAINER_SIZE = container,
+        RADIUS = container / 2,
+        ICON_SIZE = 20
+    },
+    -- Colors must be a string
+    Colors = {
+        PRIMARY = '#00b4d8',
+        PRIMARY_2 = '#0096c7',
+        BORDER = '#dadada',
+        TEXT = '#656565',
+    }
+}
 
 Config.Open = {
     key = 'f1',

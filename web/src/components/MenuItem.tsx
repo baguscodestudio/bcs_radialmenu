@@ -2,14 +2,7 @@ import React, { useState } from 'react';
 import * as MaterialDesign from 'react-icons/md';
 import styled from 'styled-components';
 // import ResizeObserver from 'resize-observer-polyfill';
-import {
-  ITEM_SIZE,
-  RADIUS,
-  BORDER,
-  TEXT,
-  PRIMARY,
-  CONTAINER_SIZE,
-} from './constants';
+import { Size, Colors, ColorsProp } from '../store/config';
 import { Icon } from './Icons';
 
 import { useLayer, useHover } from 'react-laag';
@@ -50,20 +43,20 @@ const TooltipBox = styled(motion.div)`
   border-radius: 3px;
 `;
 
-const Circle = styled(motion.div)`
+const Circle = styled(motion.div)<{ itemsize: number; colors: ColorsProp }>`
   position: absolute;
-  width: ${ITEM_SIZE}px;
-  height: ${ITEM_SIZE}px;
+  width: ${(p) => p.itemsize}px;
+  height: ${(p) => p.itemsize}px;
   background-color: white;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${BORDER};
+  border: 1px solid ${(p) => p.colors.BORDER};
   box-shadow: 1px 1px 6px 0px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: box-shadow 0.15s ease-in-out, border 0.15s ease-in-out;
-  color: ${TEXT};
+  color: ${(p) => p.colors.TEXT};
   pointer-events: all;
   will-change: transform;
 
@@ -73,7 +66,7 @@ const Circle = styled(motion.div)`
 
   &:hover {
     box-shadow: 1px 1px 10px 0px rgba(0, 0, 0, 0.15);
-    color: ${PRIMARY};
+    color: ${(p) => p.colors.PRIMARY};
 
     & svg {
       transform: scale(1.15);
@@ -121,12 +114,14 @@ function MenuItem({
         style={style}
         onClick={onClick}
         {...hoverProps}
+        itemsize={Size.ITEM_SIZE}
+        colors={Colors}
         initial={{ x: 0, opacity: 0 }}
         animate={{ x: 1, opacity: 1 }}
         exit={{ x: 0, opacity: 0 }}
         transformTemplate={({ x }: { x: string }) => {
           const value = parseFloat(x.replace('px', ''));
-          return getTransform(value, RADIUS, index, totalItems);
+          return getTransform(value, Size.RADIUS, index, totalItems);
         }}
         transition={{
           delay: index * 0.025,
@@ -159,12 +154,12 @@ function MenuItem({
  * Menu
  */
 
-const MenuBase = styled.div`
+const MenuBase = styled.div<{ containersize: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${CONTAINER_SIZE}px;
-  height: ${CONTAINER_SIZE}px;
+  width: ${(p) => p.containersize}px;
+  height: ${(p) => p.containersize}px;
   pointer-events: none;
   border-radius: 50%;
 `;
@@ -213,7 +208,12 @@ const Menu = React.forwardRef<Ref, MenuProp>(function Menu(
   };
 
   return (
-    <MenuBase ref={ref} style={style} onClick={() => setOpen(false)}>
+    <MenuBase
+      ref={ref}
+      style={style}
+      onClick={() => setOpen(false)}
+      containersize={Size.CONTAINER_SIZE}
+    >
       {items.map((item: MenuData, index: number) => (
         <MenuItem
           key={index}

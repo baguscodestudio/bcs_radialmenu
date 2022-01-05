@@ -1,5 +1,6 @@
 import * as MaterialDesign from 'react-icons/md';
 import React from 'react';
+import { Size } from '../store/config';
 
 export const Icon = ({
   iconName,
@@ -9,5 +10,7 @@ export const Icon = ({
   color?: string;
 }) => {
   const icon = React.createElement(MaterialDesign[iconName]);
-  return <div style={{ color: color }}>{icon}</div>;
+  return (
+    <div style={{ color: color, fontSize: `${Size.ICON_SIZE}px` }}>{icon}</div>
+  );
 };

@@ -38,6 +38,13 @@ CreateThread(function()
     AddJobMenu()
 end)
 
+RegisterNUICallback('initialize', function(data, cb)
+    cb({
+        size = Config.UI.Size,
+        colors = Config.UI.Colors
+    })
+end)
+
 RegisterNUICallback('hideFrame', function(data,cb)
     SetNuiFocus(false, false)
     cb('ok')
@@ -57,7 +64,7 @@ RegisterNUICallback('clickedItem', function(data, cb)
 end)
 
 function addMenu(data)
-    if data.label and data.icon and (data.submenu or (data.client and data.shouldClose and data.event)) then
+    if data.label and data.icon and (data.submenu or (data.client ~= nil and data.shouldClose ~= nil and data.event)) then
         menu[#menu + 1] = data
     end
 end

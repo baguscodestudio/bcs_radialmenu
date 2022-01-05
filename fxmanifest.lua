@@ -4,7 +4,7 @@ lua54 'yes'
 
 name         'bcs_radialmenu'
 author       'baguscodestudio'
-version      '0.0.5'
+version      '1.0.0'
 repository   'https://github.com/baguscodestudio/bcs_radialmenu'
 description  'A radial menu for FiveM'
 
