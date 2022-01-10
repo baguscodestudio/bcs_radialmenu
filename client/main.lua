@@ -3,6 +3,9 @@ local menu, PlayerData = {}, {}
 CreateThread(function()
     if Config.Framework == 'ESX' then
         local ESX = exports['es_extended']:getSharedObject()
+        while ESX.GetPlayerData().job == nil do
+            Wait(100)
+        end
         PlayerData = ESX.GetPlayerData()
 
         RegisterNetEvent('esx:playerLoaded', function(xPlayer)
