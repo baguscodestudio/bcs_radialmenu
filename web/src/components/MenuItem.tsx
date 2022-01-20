@@ -196,9 +196,9 @@ const Menu = React.forwardRef<Ref, MenuProp>(function Menu(
         setOpen(true);
       }, 500);
     } else {
-      setItems([]);
-      setHome([]);
-      setRadialOpen(false);
+      // setItems([]);
+      // setHome([]);
+      // setRadialOpen(false);
       fetchNui('clickedItem', item)
         .then()
         .catch((e) => {

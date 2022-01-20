@@ -40,14 +40,22 @@ const App = () => {
   useNuiEvent<MenuData[]>('openMenu', (data) => {
     setRadialOpen(true);
     setHome(data);
+    setTimeout(handleClick, 200);
   });
 
-  useExitListener(setRadialOpen);
+  useExitListener(() => handleClose());
 
   const { layerProps, triggerProps, renderLayer } = useLayer({
     isOpen,
     placement: 'center',
   });
+
+  const handleClose = () => {
+    setItems([]);
+    setRadialOpen(false);
+    fetchNui('hideFrame');
+    setOpen(false);
+  };
 
   const handleClick = () => {
     if (isOpen) {
