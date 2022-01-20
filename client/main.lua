@@ -54,7 +54,9 @@ RegisterNUICallback('hideFrame', function(data,cb)
 end)
 
 RegisterNUICallback('clickedItem', function(data, cb)
-    SetNuiFocus(false, false)
+    if data.shouldClose then
+        SetNuiFocus(false, false)
+    end
     if not data.args then
         data.args = {}
     end

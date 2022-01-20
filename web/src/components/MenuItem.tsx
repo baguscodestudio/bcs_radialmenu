@@ -211,7 +211,7 @@ const Menu = React.forwardRef<Ref, MenuProp>(function Menu(
     <MenuBase
       ref={ref}
       style={style}
-      onClick={() => setOpen(false)}
+      // onClick={() => setOpen(false)}
       containersize={Size.CONTAINER_SIZE}
     >
       {items.map((item: MenuData, index: number) => (
