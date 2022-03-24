@@ -69,6 +69,13 @@ For Example:
 }
 ```
 
+Exports for disabling and if the player is dead is available using
+
+```lua
+exports['bcs_radialmenu']:setDead(boolean) -- if true then it will show a dead menu shown in Config.DeadMenu
+exports['bcs_radialmenu']:disable(boolean) -- if true then the radialmenu will be disabled
+```
+
 Further option can be seen in the config.lua folder!
 
 ## Contributing

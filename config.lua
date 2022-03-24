@@ -74,27 +74,130 @@ Config.RadialMenu = {
         icon="MdSettingsAccessibility",
         submenu= {
             {
-                label="Example 1",
-                event="Example:event",
-                shouldClose=true,
+                label="Restore clothes",
                 icon="MdAccountBox",
-                client=true
+                client=true,
+                shouldClose=true,
+                event="radial:restoreclothes"
             },
             {
-                label="Example 2",
-                event="Example:event",
-                shouldClose=true,
+                label="Clothes menu",
                 icon="MdAccountBox",
-                client=true
+                submenu = {
+                    {
+                        label="Remove Top",
+                        event="radial:removeclothes",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'top'},
+                        client=true
+                    },
+                    {
+                        label="Remove Pants",
+                        event="radial:removeclothes",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'pants'},
+                        client=true
+                    },
+                    {
+                        label="Remove Shoes",
+                        event="radial:removeclothes",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'shoes'},
+                        client=true
+                    },
+                    {
+                        label="Remove Bag",
+                        event="radial:removeclothes",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'bag'},
+                        client=true
+                    },
+                    {
+                        label="Remove Vest",
+                        event="radial:removeclothes",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'vest'},
+                        client=true
+                    },
+                    {
+                        label="Remove Mask",
+                        event="radial:removeclothes",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'mask'},
+                        client=true
+                    },
+                }
             },
             {
-                label="Example 3",
-                event="Example:event",
-                shouldClose=true,
+                label="Accessories menu",
                 icon="MdAccountBox",
-                client=true
+                submenu = {
+                    {
+                        label="Remove Earings",
+                        event="radial:removeaccessories",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'ears'},
+                        client=true
+                    },
+                    {
+                        label="Remove Hat",
+                        event="radial:removeaccessories",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'hat'},
+                        client=true
+                    },
+                    {
+                        label="Remove Watch",
+                        event="radial:removeaccessories",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'watch'},
+                        client=true
+                    },
+                    {
+                        label="Remove Bracelet",
+                        event="radial:removeaccessories",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'bracelet'},
+                        client=true
+                    },
+                    {
+                        label="Remove Glasses",
+                        event="radial:removeaccessories",
+                        shouldClose=true,
+                        icon="MdAccountBox",
+                        args={'glasses'},
+                        client=true
+                    },
+                }
             },
         }
+    },
+}
+
+Config.DeadMenu = {
+    {
+        label="Call Ambulance",
+        event="esx_ambulancejob:call",
+        shouldClose=true,
+        icon="MdMedicalServices",
+        client=true
+    },
+    {
+        label="Refresh body",
+        event="esx_ambulancejob:refreshBody",
+        shouldClose=true,
+        icon="MdMedicalServices",
+        client=true
     },
 }
 
@@ -150,37 +253,143 @@ Config.JobMenu = {
             label = "Revive Citizen",
             icon='MdMedicalServices',
             shouldClose = true,
-            event="medic:revivePlayer",
+            event="esx_ambulancejob:reviveNearby",
             client= true
         },
         {
             label = "Bandage Citizen",
             icon='MdMedicalServices',
             shouldClose = true,
-            event="medic:bandagePlayer",
+            event="esx_ambulancejob:heal",
             client= true
         }
     },
     police = {
         {
-            label="Example 1",
-            event="Example:event",
+            label='Citizen Interaction',
+            icon="MdAccountCircle",
+            submenu={
+                {
+                    label="Fine Citizen",
+                    event="esx_policejob:actions",
+                    shouldClose=true,
+                    icon="MdReceipt",
+                    args={'fine'},
+                    client=true
+                },
+                {
+                    label="Cuff",
+                    event="esx_policejob:actions",
+                    shouldClose=true,
+                    icon="MdOutlineLock",
+                    args={'cuff'},
+                    client=true
+                },
+                {
+                    label="Uncuff",
+                    event="esx_policejob:actions",
+                    shouldClose=true,
+                    icon="MdOutlineLockOpen",
+                    args={'uncuff'},
+                    client=true
+                },
+                {
+                    label="Search Citizen",
+                    event="esx_policejob:actions",
+                    shouldClose=true,
+                    icon="MdOutlineSearch",
+                    args={'search'},
+                    client=true
+                },
+                {
+                    label="Drag Citizen",
+                    event="esx_policejob:actions",
+                    shouldClose=true,
+                    icon="MdSportsKabaddi",
+                    args={'drag'},
+                    client=true
+                },
+                {
+                    label="Put In Vehicle",
+                    event="esx_policejob:actions",
+                    shouldClose=true,
+                    icon="MdDirectionsCar",
+                    args={'drag'},
+                    client=true
+                },
+                {
+                    label="Put Out Vehicle",
+                    event="esx_policejob:actions",
+                    shouldClose=true,
+                    icon="MdDirectionsCarFilled",
+                    args={'outveh'},
+                    client=true
+                },
+            }
+        },
+        {
+            label = 'Vehicle Interaction',
+            icon="MdDirectionsCarFilled",
+            submenu = {
+                {
+                    label = 'Impound vehicle',
+                    event = 'hrpd_h_impound:openImpound',
+                    icon="MdDirectionsCarFilled",
+                    shouldClose = true,
+                    client = true,
+                }
+            }
+        }
+    },
+    mafia={
+        {
+            label="Tie Citizen",
+            event="esx_mafiajob:actions",
             shouldClose=true,
-            icon="MdAccountBox",
+            icon="MdOutlineLock",
+            args={'cuff'},
             client=true
         },
         {
-            label="Example 2",
-            event="Example:event",
+            label="Untie",
+            event="esx_mafiajob:actions",
             shouldClose=true,
-            icon="MdAccountBox",
+            icon="MdOutlineLockOpen",
+            args={'uncuff'},
             client=true
         },
         {
-            label="Example 3",
-            event="Example:event",
+            label="Search Citizen",
+            event="esx_mafiajob:actions",
             shouldClose=true,
-            icon="MdAccountBox",
+            icon="MdOutlineSearch",
+            args={'search'},
+            client=true
+        },
+    },
+    cartel={
+        {
+            label="Tie Citizen",
+            event="esx_carteljob:actions",
+            shouldClose=true,
+            icon="MdOutlineLock",
+            args={'cuff'},
+            client=true
+        },
+        {
+            label="Untie",
+            event="esx_carteljob:actions",
+            shouldClose=true,
+            icon="MdOutlineLockOpen",
+            args={'uncuff'},
+            client=true
+        },
+        {
+            label="Search Citizen",
+            event="esx_carteljob:actions",
+            shouldClose=true,
+            icon="MdOutlineSearch",
+            args={'search'},
             client=true
         },
     }

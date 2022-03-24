@@ -1,4 +1,5 @@
 local menu, PlayerData = {}, {}
+local isDead, disabled = false, false
 
 CreateThread(function()
     if Config.Framework == 'ESX' then
@@ -84,6 +85,14 @@ end
 
 exports('removeMenu', removeMenu)
 
+exports('setDead', function(status)
+    isDead = status
+end)
+
+exports('disable', function(toggle)
+    disabled = toggle
+end)
+
 function AddJobMenu()
     if (Config.Framework == 'ESX' or Config.Framework == 'QB') then
         if PlayerData.job and Config.JobMenu[PlayerData.job.name] then
@@ -102,11 +111,20 @@ function AddJobMenu()
 end
 
 RegisterCommand(Config.Open.command, function()
-    SetNuiFocus(true, true)
-    SendNUIMessage({
-        action="openMenu",
-        data=menu
-    })
+    if not disabled then
+        SetNuiFocus(true, true)
+        if isDead then
+            SendNUIMessage({
+                action="openMenu",
+                data=Config.DeadMenu
+            })
+        else
+            SendNUIMessage({
+                action="openMenu",
+                data=menu
+            })
+        end
+    end
 end)
 
 if not Config.Open.commandonly then
