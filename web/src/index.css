@@ -3,15 +3,44 @@
 @tailwind utilities;
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	height: 100vh;
+}
+
+#root {
+	height: 100%;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+		monospace;
+}
+
+@layer components {
+	.absolute-middle {
+		@apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+	}
+
+	.subtract:after {
+		content: '';
+		border-radius: 50%;
+		width: 280px;
+		height: 280px;
+		box-shadow: 0px 0px 0px 2000px rgba(23, 23, 23, 0.7);
+		@apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+	}
+
+	.icon {
+		@apply absolute flex justify-center items-center transition-transform text-neutral-100 z-10 w-[100px] h-[100px] rounded-full text-4xl translate-y-48;
+	}
+
+	.active {
+		transform: translateY(230px) !important;
+		@apply bg-[#2954A3] transition-transform cursor-pointer;
+	}
 }

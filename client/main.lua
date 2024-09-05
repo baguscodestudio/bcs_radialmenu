@@ -1,142 +1,134 @@
-local menu, PlayerData = {}, {}
-local isDead, disabled = false, false
-
-CreateThread(function()
-    if Config.Framework == 'ESX' then
-        local ESX = exports['es_extended']:getSharedObject()
-        while ESX.GetPlayerData().job == nil do
-            Wait(100)
-        end
-        PlayerData = ESX.GetPlayerData()
-
-        RegisterNetEvent('esx:playerLoaded', function(xPlayer)
-			PlayerData = xPlayer
-		end)
-
-		RegisterNetEvent('esx:setJob', function(job)
-			PlayerData.job = job
-            removeMenu(Config.JobOption.label)
-            Wait(100)
-            AddJobMenu()
-		end)
-    elseif Config.Framework == 'QB' then
-        local QBCore = exports['qb-core']:GetCoreObject()
-		PlayerData = QBCore.Functions.GetPlayerData()
-
-        RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-			PlayerData = QBCore.Functions.GetPlayerData()
-		end)
-
-        RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
-			PlayerData.job = JobInfo
-            removeMenu(Config.JobOption.label)
-            Wait(100)
-            AddJobMenu()
-		end)
-    end
-
-    for i=1, #Config.RadialMenu do
-        menu[#menu + 1] = Config.RadialMenu[i]
-    end
-
-    AddJobMenu()
-end)
-
-RegisterNUICallback('initialize', function(data, cb)
-    cb({
-        size = Config.UI.Size,
-        colors = Config.UI.Colors
-    })
-end)
-
-RegisterNUICallback('hideFrame', function(data,cb)
-    SetNuiFocus(false, false)
-    cb('ok')
-end)
-
-RegisterNUICallback('clickedItem', function(data, cb)
-    if data.shouldClose then
-        SetNuiFocus(false, false)
-    end
-    if not data.args then
-        data.args = {}
-    end
-    if data.client then
-        TriggerEvent(data.event, table.unpack(data.args))
-    elseif not data.client then
-        TriggerServerEvent(data.event, table.unpack(data.args))
-    end
-    cb('ok')
-end)
-
-function addMenu(data)
-    if data.label and data.icon and (data.submenu or (data.client ~= nil and data.shouldClose ~= nil and data.event)) then
-        menu[#menu + 1] = data
-    end
+local function ToggleNuiFrame(shouldShow)
+  SetNuiFocus(shouldShow, shouldShow)
+  SendReactMessage('setVisible', shouldShow)
 end
-
-exports('addMenu', addMenu)
-
-function removeMenu(label)
-    if label then
-        removeItemFromArray(menu, 'label', label)
-    end
-end
-
-exports('removeMenu', removeMenu)
-
-exports('setDead', function(status)
-    isDead = status
-end)
-
-exports('disable', function(toggle)
-    disabled = toggle
-end)
-
-function AddJobMenu()
-    if (Config.Framework == 'ESX' or Config.Framework == 'QB') then
-        if PlayerData.job and Config.JobMenu[PlayerData.job.name] then
-            local joboption = {
-                label = Config.JobOption.label,
-                icon = Config.JobOption.icon,
-                submenu = {}
-            }
-
-            for i=1, #Config.JobMenu[PlayerData.job.name] do
-                joboption.submenu[#joboption.submenu + 1] = Config.JobMenu[PlayerData.job.name][i]
-            end
-            menu[#menu + 1] = joboption
-        end
-    end
-end
-
-RegisterCommand(Config.Open.command, function()
-    if not disabled then
-        SetNuiFocus(true, true)
-        if isDead then
-            SendNUIMessage({
-                action="openMenu",
-                data=Config.DeadMenu
-            })
-        else
-            SendNUIMessage({
-                action="openMenu",
-                data=menu
-            })
-        end
-    end
-end)
+local Menus = {}
+local currentMenu = ''
+local home = ''
+local additionalOptions = {}
 
 if not Config.Open.commandonly then
-    RegisterKeyMapping(Config.Open.command, 'Open Radial Menu', 'keyboard', Config.Open.key)
+  RegisterKeyMapping('+' .. Config.Open.command, 'Open Radial Menu', 'keyboard', Config.Open.key)
 end
 
--- Utils
-function removeItemFromArray(array, property, value)
-    for i=1, #array do
-        if array[i][property] == value then
-            array[i] = nil
-            break
-        end
+CreateThread(function()
+  exports.bcs_radialmenu:RegisterMenus(Config.Menu)
+  if PlayerData and PlayerData.job then
+    for job, values in pairs(Config.JobMenu) do
+      if job == PlayerData.job.name then
+        exports.bcs_radialmenu:addOption({
+          id = 'job_menu',
+          label = 'Job Menu',
+          icon = 'fa-solid fa-suitcase',
+          menu = job .. '_menu'
+        })
+      end
+      exports.bcs_radialmenu:RegisterMenus(values)
     end
-end
+  end
+end)
+
+local open = false
+
+RegisterCommand('+' .. Config.Open.command, function()
+  local dead = lib.callback.await('bcs_jobs:ambulance:server:CheckPlayer', false, GetPlayerServerId(PlayerId()))
+  if not dead then
+    SetNuiFocusKeepInput(true)
+    ToggleNuiFrame(true)
+    SendReactMessage('setMenu', Menus[currentMenu])
+    open = true
+    while open do
+      Wait(0)
+      DisableControlAction(0, 1, true)  -- Look Left/Right
+      DisableControlAction(0, 2, true)  -- Look up/Down
+      DisableControlAction(0, 24, true) -- Attack
+    end
+  end
+end)
+
+RegisterCommand('-' .. Config.Open.command, function()
+  ToggleNuiFrame(false)
+  SetNuiFocusKeepInput(false)
+  open = false
+end)
+
+exports('changeMenu', function(menu)
+  currentMenu = menu
+end)
+
+exports('resetMenu', function()
+  currentMenu = home
+end)
+
+exports('addOption', function(option, menu)
+  if additionalOptions[option.id] then
+    exports.bcs_radialmenu:removeOption(option.id)
+  end
+  if menu and Menus[menu] then
+    Menus[menu].options[#Menus[menu].options + 1] = option
+  else
+    Menus[currentMenu].options[#Menus[currentMenu].options + 1] = option
+  end
+  additionalOptions[option.id] = true
+end)
+
+exports('removeOption', function(id, menu)
+  local function RemoveOption(options)
+    for k, v in pairs(options) do
+      if v.id and v.id == id then
+        table.remove(options, k)
+        additionalOptions[id] = false
+        return true
+      end
+    end
+    return false
+  end
+  if menu then
+    RemoveOption(Menus[menu].options)
+  else
+    if not RemoveOption(Menus[currentMenu].options) then
+      for _, val in pairs(Menus) do
+        if RemoveOption(val.options) then
+          return
+        end
+      end
+    end
+  end
+end)
+
+exports('RegisterMenus', function(menus)
+  menus = table.type(menus) == 'array' and menus or { menus }
+  for i = 1, #menus do
+    Menus[menus[i].menu] = menus[i]
+    if menus[i].isHome then
+      currentMenu = menus[i].menu
+      home = menus[i].menu
+    end
+  end
+end)
+
+RegisterNUICallback('hideFrame', function(_, cb)
+  ToggleNuiFrame(false)
+  cb({})
+end)
+
+RegisterNUICallback('getMenu', function(data, cb)
+  if data then
+    cb(Menus[data])
+  else
+    cb(Menus[currentMenu])
+  end
+end)
+
+RegisterNUICallback('itemClick', function(data, cb)
+  local option = Menus[data.menu].options[data.index]
+  if option then
+    local onSelect = option.onSelect
+    if onSelect then
+      onSelect()
+    elseif option.event then
+      TriggerEvent(option.event, option.args and table.unpack(option.args))
+    end
+  end
+  cb({})
+end)

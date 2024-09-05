@@ -1,82 +1,131 @@
-# BCS Radial Menu
+# BCS Radial Menu V2
 
-This project is to freshen up the options for free radial menu for FiveM. It is inspired by qb-radialmenu config and [nashvail](https://github.com/nashvail/ReactPathMenu) radial menu design.
+A fresh new look of a unique radial menu for FiveM
 
 ## Features
 
-- Optimized 0.00 (Depending on your framework max tested is 0.03)
-- Minimalistic Design with tooltip for label
-- Responsive Design
+- Optimized 0.00
+- Smooth animation and Clean UI
 - Flexible menu with exports for addition on the go
 - Supports ESX and QBCore for job menu
 
 ## Screenshots & Preview
 
-[Youtube](https://youtu.be/_LYpRTBsNf0)
-![Preview](https://cdn.discordapp.com/attachments/817613758376706089/923251874906386442/unknown.png)
+<!-- [Youtube](https://youtu.be/_LYpRTBsNf0) -->
 
 ## Documentation
 
-A Menu option will have the properties of
-|Properties|Detail|
-|----------|-----------|
-|label |Text to display in the tooltip (Must be unique)|
-|icon |Icon string (here is the [list](https://react-icons.github.io/react-icons/icons?name=md))|
-|event |Client or Server event to trigger|
-|client |True to trigger a client event and false to trigger server event|
-|shouldClose|Whether or not if the menu should close after clicking the option|
-|args |Arguments when triggering the event (Optional)|
+In `config/menu.lua` you can add more options for your radial menu using these properties. `config/job.lua` are the same, the difference is just on the first key must be the **job name**.
 
-Configuring the menu and submenus can be done inside Config.RadialMenu in the config.lua.
-
-Additionally to add an option in the home menu in a specific event (such as store car option in a parking lot), you can use
+#### Menu or Submenu
 
 ```lua
-exports['bcs_radialmenu']:addMenu({
-    label = 'the label you want',
-    icon = 'MdPhone', -- For example
-    event = 'open:phone',
-    client = true,
-    shouldClose = true,
-    args = {'test', '123', 4}
-})
+    {
+        menu = 'home', -- ID of the menu
+        isHome = true,
+        options = {
+            -- See the content examples in Option
+        }
+    },
 ```
 
-Don't forget to remove the menu after you are done with it. It takes the label property as its argument.
+- `menu` (string): The ID of the menu, used for submenu if its a submenu
+- `isHome`? (boolean): Should only be for one object of the array, to indicate the home or the initial menu options
+- `options` (table): An array of tables with **Options**
+
+#### Option
 
 ```lua
-exports['bcs_radialmenu']:removeMenu('the label you want')
-```
-
-To Create a menu option with a submenu, label, icon, and submenu properties are needed. In theory it should be possible to create as many submenu you want.
-For Example:
-
-```lua
-{
-    label = 'Job Menu',
-    icon = 'MdWork',
-    submenu = {
+    options = {
         {
-            label = 'the label you want',
-            icon = 'MdPhone', -- For example
-            event = 'open:phone',
-            client = true,
-            shouldClose = true,
-            args = {'test', '123', 4}
+            label = 'Interaction Menu',
+            images = 'https://www.pngfind.com/pngs/m/686-6862044_minecraft-dirt-block-png-minecraft-logo-png-transparent.png',
+            menu = 'interaction_menu'
         },
-        -- and continues
+        {
+            label = 'Open Your Phone',
+            icon = 'fa-solid fa-mobile-screen-button',
+            onSelect = function()
+                ExecuteCommand('+use_phone_key')
+            end
+        },
+        {
+            label = 'Toggle Shoes',
+            image = 'shoes',
+            event = 'Clothing:client:RemoveClothes',
+            args = { 'shoes' }
+        },
     }
-}
 ```
 
-Exports for disabling and if the player is dead is available using
+- `label` (string): The title that will appear in the middle
+- `images`? (string): This can be a link or the file name for the image within the **html/images/** folder
+- `icon`? (string): Uses the icon from [fontawesome](https://fontawesome.com/icons)
+- `onSelect`? (function): A function that will be triggered after selecting the option
+- `event`? (string): The event that will be triggered after selecting
+- `args`? (table): Array of any type of data that will be sent to the event triggered
+
+### Exports
+
+You can check more of this example usage within the `example.lua` file.
+
+#### RegisterMenus
 
 ```lua
-exports['bcs_radialmenu']:setDead(boolean) -- if true then it will show a dead menu shown in Config.DeadMenu
-exports['bcs_radialmenu']:disable(boolean) -- if true then the radialmenu will be disabled
+    -- exports.bcs_radialmenu:RegisterMenus(Menus: table)
+    exports.bcs_radialmenu:RegisterMenus({
+        {
+            menu = 'vehicle_menu',
+            options = {
+                {
+                    label = 'Seat Menu',
+                    image = 'vehicle_seat',
+                    menu = 'seat_menu'
+                },
+                {
+                    label = 'Engine',
+                    image = 'vehicle_engine',
+                    onSelect = function()
+                        EngineControl()
+                    end
+                },
+            }
+        },
+    })
 ```
 
-Further option can be seen in the config.lua folder!
+This is for registering the menus that can be called later on.
+
+- `Menus` (table): An array of menu
+
+#### AddOption
+
+```lua
+    -- exports.bcs_radialmenu:AddOption(Menu: table)
+    exports.bcs_radialmenu:AddOption({
+        id = 'veh_control',
+        label = 'Vehicle',
+        icon = 'fa-solid fa-car',
+        menu = 'vehicle_menu'
+    })
+```
+
+Adds the option to the **Home** menu
+
+- `Menu` (table): An object of menu
+
+#### RemoveOption
+
+```lua
+    -- exports.bcs_radialmenu:RemoveOption(menu_id: string)
+    exports.bcs_radialmenu:RemoveOption('veh_control')
+```
+
+Removes the option from the **Home** menu
+
+- `menu_id` (string): The menu ID
+
+Further option can be seen in the `config` folder!
 
 ## Contributing
 
@@ -84,13 +133,20 @@ Contribution is welcome! Feel free to fork and create a pull request. I believe 
 
 ## Support
 
-Further support or issue can be submitted in the github issue or in my (discord)[https://discord.gg/caa7xt2d8G]
+Further support or issue can be submitted in the github issue or in my [discord](https://discord.gg/92JZmrMMez) in the public chat.
 
 ### Other Scripts
 
-- [propanimenu](https://github.com/baguscodestudio/propanimenu)
+**Paid**
 
-## Acknowledgements
+- [Company Manager (Bill, Boss Menu, Duty)](https://forum.cfx.re/t/esx-qb-boss-and-billing-menu-company-manager-updated-v3/4805265)
+- [License Manager (ID Card + Badge + License)](https://forum.cfx.re/t/esx-qb-mb-license-manager-v3/4808241/)
+- [Housing Script](https://forum.cfx.re/t/esx-qb-housing-with-mlo-shells-mortgage/4913311)
+- [Jobcenter](https://forum.cfx.re/t/job-center-joblisting-menu-v2-clean-configurable/4797677)
 
-- [Nashvail tutorial](https://github.com/nashvail/ReactPathMenu)
-- [qb-radialmenu](https://github.com/qbcore-framework/qb-radialmenu)
+**Free**
+
+- [HUD](https://forum.cfx.re/t/notification-ui-drawtext-keyboardinput-confirmation-menu/4831831)
+- [Radialmenu](https://forum.cfx.re/t/free-radial-menu-new-minimalistic-and-optimized-esx-qb-standalone/4791991/1)
+- [Questionare](https://forum.cfx.re/t/standalone-questionare-quiz-test-ui-with-easy-exports/4803161)
+- [Prop Animation Tool](https://forum.cfx.re/t/free-dev-tool-ped-animation-and-prop-menu/4785352)

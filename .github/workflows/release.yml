@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - name: Install archive tools
+        run: sudo apt install zip
+
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies & Build
+        run: |
+          cd web
+          npm install
+          npm run build
+
+      - name: Conventional Changelog Action
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.TOKEN_GITHUB }}
+          output-file: false
+          skip-version-file: true
+          skip-on-empty: false
+          skip-commit: true
+          release-count: 1
+          fallback-version: '2.0.0'
+
+      - name: Bump manifest version
+        run: node .github/actions/bump-manifest-version.js
+        env:
+          TGT_RELEASE_VERSION: ${{ steps.changelog.outputs.tag }}
+
+      - name: Push manifest change
+        uses: EndBug/add-and-commit@v8
+        with:
+          add: fxmanifest.lua
+          push: true
+          author_name: Manifest Bumper
+          author_email: 41898282+github-actions[bot]@users.noreply.github.com
+          message: 'chore: bump manifest version to ${{ steps.changelog.outputs.tag }}'
+
+      - name: Bundle files
+        run: |
+          mkdir bcs_radialmenu
+          shopt -s extglob dotglob
+          mv !(bcs_radialmenu) bcs_radialmenu
+          shopt -u dotglob
+          zip -r bcs_radialmenu.zip . -x 'bcs_radialmenu/web/node_modules*'
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: bcs_radialmenu.zip
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+          tag_name: ${{ steps.changelog.outputs.tag }}
