@@ -1,5 +1,7 @@
 # BCS Radial Menu V2
 
+![Thumbnail](https://cdn.discordapp.com/attachments/853638271430557747/1281238400023793674/Thumbnail_Radialmenu.png?ex=66dafdbe&is=66d9ac3e&hm=ef3c01414990d11f680ffb1dfdb58b6b97feeedc59a4f8e449911e98fd543cf2&)
+
 A fresh new look of a unique radial menu for FiveM
 
 ## Features
@@ -9,9 +11,7 @@ A fresh new look of a unique radial menu for FiveM
 - Flexible menu with exports for addition on the go
 - Supports ESX and QBCore for job menu
 
-## Screenshots & Preview
-
-<!-- [Youtube](https://youtu.be/_LYpRTBsNf0) -->
+## [Youtube](https://youtu.be/HR9OwqEdow4)
 
 ## Documentation
 
