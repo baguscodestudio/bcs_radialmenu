@@ -11,10 +11,10 @@ CreateThread(function()
     RegisterNetEvent('esx:setJob')
     AddEventHandler('esx:setJob', function(job)
         PlayerData.job = job
-        exports.bcs_radialmenu:removeOption('job_menu')
+        exports.bcs_radialmenu:RemoveOption('job_menu')
         for key, values in pairs(Config.JobMenu) do
             if job.name == key then
-                exports.bcs_radialmenu:addOption({
+                exports.bcs_radialmenu:AddOption({
                     id = 'job_menu',
                     label = 'Job Menu',
                     icon = 'fa-solid fa-suitcase',
@@ -30,7 +30,7 @@ CreateThread(function()
         if PlayerData and PlayerData.job then
             for job, values in pairs(Config.JobMenu) do
                 if job == PlayerData.job.name then
-                    exports.bcs_radialmenu:addOption({
+                    exports.bcs_radialmenu:AddOption({
                         id = 'job_menu',
                         label = 'Job Menu',
                         icon = 'fa-solid fa-suitcase',

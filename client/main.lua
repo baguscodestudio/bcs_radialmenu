@@ -16,7 +16,7 @@ CreateThread(function()
   if PlayerData and PlayerData.job then
     for job, values in pairs(Config.JobMenu) do
       if job == PlayerData.job.name then
-        exports.bcs_radialmenu:addOption({
+        exports.bcs_radialmenu:AddOption({
           id = 'job_menu',
           label = 'Job Menu',
           icon = 'fa-solid fa-suitcase',
@@ -31,7 +31,7 @@ end)
 local open = false
 
 RegisterCommand('+' .. Config.Open.command, function()
-  local dead = lib.callback.await('bcs_jobs:ambulance:server:CheckPlayer', false, GetPlayerServerId(PlayerId()))
+  local dead = IsDead()
   if not dead then
     SetNuiFocusKeepInput(true)
     ToggleNuiFrame(true)
@@ -60,9 +60,9 @@ exports('resetMenu', function()
   currentMenu = home
 end)
 
-exports('addOption', function(option, menu)
+exports('AddOption', function(option, menu)
   if additionalOptions[option.id] then
-    exports.bcs_radialmenu:removeOption(option.id)
+    exports.bcs_radialmenu:RemoveOption(option.id)
   end
   if menu and Menus[menu] then
     Menus[menu].options[#Menus[menu].options + 1] = option
@@ -72,7 +72,7 @@ exports('addOption', function(option, menu)
   additionalOptions[option.id] = true
 end)
 
-exports('removeOption', function(id, menu)
+exports('RemoveOption', function(id, menu)
   local function RemoveOption(options)
     for k, v in pairs(options) do
       if v.id and v.id == id then
